@@ -1,5 +1,4 @@
 const CommentModel = require('../models/Comment');
-const mongoose = require('mongoose');
 
 //create comment
 let createComment = async function(timestamp,createdBy,text){
