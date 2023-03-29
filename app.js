@@ -5,9 +5,54 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+//setup mongoose
+const mongoose = require('mongoose');
+const env = require('dotenv');
+env.config();
 
 var app = express();
-
+const {getUserById} = require('./controllers/user');
+//setup bcrypt
+const bcrypt = require('bcrypt');
+//setup express session
+const session = require('express-session');
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+//setup passport
+const passport = require('passport');
+//setup jwt
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(
+  new JwtStrategy({
+    //options
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.SECRET,
+  },async (jwt_payload,done)=>{
+    try{
+      const user = await getUserById(jwt_payload.id);
+      if (user){
+        return done(null,user);
+      }else{
+        return done(null,false);
+      }
+    }catch(e){
+      console.log(`there was an error ${e} when getting the user`);
+    }
+  })
+);
+passport.serializeUser((user,done)=>{
+  return done(null,user._id);
+})
+passport.deserializeUser(async (docID,done)=>{
+  const user = await getUserById(docID);
+  return done(null,user);
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -20,10 +65,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 
-//setup mongoose
-const mongoose = require('mongoose');
-const env = require('dotenv');
-env.config();
 
 mongoose.connect(process.env.DATABASE_URL)
   .then(()=>{
