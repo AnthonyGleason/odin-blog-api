@@ -1,13 +1,14 @@
 const UserModel = require('../models/User');
 
 //create a new user
-let createUser = async function(firstName,lastName,email, group){
+let createUser = async function(firstName,lastName,email, group,password){
   try{
     const user = await UserModel.create({
       firstName: firstName,
       lastName: lastName,
       email: email,
       group: group,
+      password: password,
     });
     return user;
   }catch(e){
@@ -23,6 +24,14 @@ let getUserById = async function(docID){
     console.log(`there was an error ${e} when getting the user`);
   }
 };
+let getUserByEmail = async function(email){
+  try{
+    const user = await UserModel.findOne({'email': email});
+    return user;
+  }catch(e){
+    console.log(`there was an error ${e} when finding a user with the provided email.`);
+  }
+}
 //update a user
 let updateUser = async function(docID, updatedUser){
   try{
@@ -41,4 +50,4 @@ let deleteUser = async function(docID){
   }
 };
 
-module.exports =  {createUser,getUserById,updateUser,deleteUser};
+module.exports =  {createUser,getUserById,updateUser,deleteUser,getUserByEmail};

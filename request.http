@@ -4,8 +4,33 @@ content-type: application/json
 
 ###
 
+POST http://localhost:5000/api/login HTTP/1.1
+
+content-type: application/json
+
+###
+POST http://localhost:5000/api/signup HTTP/1.1
+
+content-type: application/json
+
+###
 POST http://localhost:5000/api/posts HTTP/1.1
 
 content-type: application/json
 
+###
+GET http://localhost:5000/api/posts/6424daec7c925bc015924a19 HTTP/1.1
+
+content-type: application/json
+
+###
+GET http://localhost:5000/api/posts/ HTTP/1.1
+
+content-type: application/json
+
+###
+
+PUT http://localhost:5000/api/posts/6424daec7c925bc015924a19 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJhbnRob255IiwibGFzdE5hbWUiOiJ0ZXN0IiwiZW1haWwiOiJhQGEiLCJncm91cCI6ImFkbWluIiwiaWQiOiI2NDI0ZDBmYzk4OTViNWZkNTE4MGJlZDAiLCJpYXQiOjE2ODAxMzc3MjB9.lb-cKUrWEvLXehenxGrJ7EXmIxfZqF_Ar3dX1ZzNEbw
 ###

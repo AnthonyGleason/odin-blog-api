@@ -12,8 +12,7 @@ env.config();
 
 var app = express();
 const {getUserById} = require('./controllers/user');
-//setup bcrypt
-const bcrypt = require('bcrypt');
+
 //setup express session
 const session = require('express-session');
 app.use(session({
@@ -33,9 +32,9 @@ passport.use(
     //options
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET,
-  },async (jwt_payload,done)=>{
+  },async (jwtPayload,done)=>{
     try{
-      const user = await getUserById(jwt_payload.id);
+      const user = await getUserById(jwtPayload.id);
       if (user){
         return done(null,user);
       }else{
