@@ -22,6 +22,19 @@ export default function PostContainer(){
                 <div className='text'>Post Text: {i.text}</div>
                 <div className='timestamp'>Date Posted: {i.timestamp}</div>
                 <button onClick={()=>{deletePost(i._id)}}>Delete</button>
+                <div className='comments-container'>
+                  {
+                    i.comments.map((comment)=>{
+                      return(
+                        <div>
+                          <div>{comment.timestamp}</div>
+                          <div>{comment.createdBy}</div>
+                          <div>{comment.text}</div>
+                        </div>
+                      )
+                    })
+                  }
+                </div>
               </div>
             )
           })

@@ -6,6 +6,7 @@ const jwt=require('jsonwebtoken');
 const passport = require('passport');
 const { getUserByEmail, createUser} = require('../controllers/user');
 const {getPost, createPost, getAllPosts, updatePost, deletePost} = require('../controllers/post');
+const { createComment, getComment } = require('../controllers/comment');
 //blog api
 router.get('/api', function(req, res, next) {
   res.json({message: 'welcome to the api'});
@@ -63,8 +64,28 @@ router.get('/api/posts/:id', async(req,res,next)=>{
   const postObj = await getPost(postID);
   res.json({postObj: postObj});
 });
+//create comment on post
+router.post('/api/posts/:id/comment', async(req,res,next)=>{
+  const postID = req.params.id;
+  //create comment with provided input
+  const comment = await createComment(
+    Date.now(),//timestamp
+    req.body.name,//createdby
+    req.body.text//text
+  )
+  //update the post pushing the doc id of the comment to the post id
+  let post = await getPost(postID);
+  post.comments.push(comment._id);
+  await updatePost(postID,post);
+});
+//get comment
+router.get('/api/posts/:id/:comment', async (req, res, next) => {
+  const commentID = req.params.comment;
+  const comment = await getComment(commentID);
+  res.json({comment: comment});
+});
+
 //create post
-//up to here the problem is that i can't access the req.body to retrieve data sent by the client
 router.post('/api/posts', passport.authenticate('jwt',{session: false}),async(req,res,next)=>{
   try{
     await createPost(
