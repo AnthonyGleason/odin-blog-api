@@ -64,14 +64,15 @@ router.get('/api/posts/:id', async(req,res,next)=>{
   res.json({postObj: postObj});
 });
 //create post
+//up to here the problem is that i can't access the req.body to retrieve data sent by the client
 router.post('/api/posts', passport.authenticate('jwt',{session: false}),async(req,res,next)=>{
   try{
-    const post = await createPost(
-      'asfasfa',
-      'tasgasg',
+    await createPost(
+      req.body.title,
+      req.body.text,
       [],
       Date.now()
-    );
+    )
     res.json({message: 'post created successfully!'});
   }catch(e){
     console.log(`there was an error ${e} when creating a new post`);
