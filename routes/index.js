@@ -28,8 +28,8 @@ router.post('/api/login',async(req,res,next)=>{
       id: user._id
     }
     const token = jwt.sign(jwtPayload,process.env.SECRET);
-    console.log(token);
-    res.json({message: 'you have been authenticated'});
+    //http only is disabled so we can access the cookie value in the client
+    res.cookie('jwt', token, { httpOnly: false, secure: true }).redirect('http://localhost:3000/');
   }else{
     res.json({status: 401});
   }
@@ -64,7 +64,7 @@ router.get('/api/posts/:id', async(req,res,next)=>{
   res.json({postObj: postObj});
 });
 //create post
-router.post('/api/posts', async(req,res,next)=>{
+router.post('/api/posts', passport.authenticate('jwt',{session: false}),async(req,res,next)=>{
   try{
     const post = await createPost(
       'asfasfa',
@@ -93,7 +93,7 @@ router.put('/api/posts/:id',passport.authenticate('jwt',{session: false}),async(
     res.json({message: 'post created successfully'});
   }
 });
-router.delete('/api/posts/:id',async(req,res,next)=>{
+router.delete('/api/posts/:id',passport.authenticate('jwt',{session: false}),async(req,res,next)=>{
   const postID = req.params.id;
   try{
     await deletePost(postID);

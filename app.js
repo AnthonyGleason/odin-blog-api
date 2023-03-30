@@ -12,7 +12,6 @@ env.config();
 
 var app = express();
 const {getUserById} = require('./controllers/user');
-
 //setup express session
 const session = require('express-session');
 app.use(session({
@@ -20,6 +19,14 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+//cors
+const cors = require('cors');
+const corsOptions = {
+  origin: 'http://localhost:3000'
+}
+
+app.use(cors(corsOptions));
 //setup passport
 const passport = require('passport');
 //setup jwt
